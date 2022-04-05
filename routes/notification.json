@@ -1,0 +1,7 @@
+{
+  "@kind" : "interaction",
+  "senderID" : 1,
+  "receiverID" : 2,
+  "type" : "wa",
+  "date" : "test"
+}

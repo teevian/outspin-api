@@ -1,0 +1,141 @@
+// METHODS
+
+// REQUEST
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "user",
+            "id" : "1"
+        }
+}
+
+//RESPONSE
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "user",
+            "id" : "1",
+            "name": "telmo",
+            "phoneNumber": "912088808",
+            "thumbnails" : [
+                {"s": "htttp://image.sizesmall.jpeg"},
+                {"m": "htttp://image.sizemedium.jpeg"},
+                {"l": "htttp://image.sizelarge.jpeg"}
+            ]
+        }
+}
+
+
+POST
+
+// REQUEST
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "user",
+            "firstName": "telmo",
+            "lastName" : "vaz",
+            "phoneNumber": "912088808",
+            "password":"dehiji",
+            "countryCode":"+351",
+            "photoUrl":"dejeidje"
+        }
+}
+
+// RESPONSE
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "user",
+            "id" : "1",
+            "thumbnails" : [
+                {"s": "htttp://image.sizesmall.jpeg"},
+                {"m": "htttp://image.sizemedium.jpeg"},
+                {"l": "htttp://image.sizelarge.jpeg"}
+            ]
+        }
+}
+
+// RESPONSE ERROR
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "error",
+            "id" : "1",
+            "status" : "status",
+            "code" : 304,
+            "title" : "NullPointerException",
+            "detail" : "exception"
+        }
+}
+
+
+PUT
+// REQUEST
+{ // @params name
+    "apiVersion" : "0.1",
+    "accessToken" : "eihduiend3u9hy9h",
+    "data" :
+        {
+            "kind" : "user",
+            "id" : "1",
+            // "alter"
+            "firstName" : "idek",
+            "lastName" : "ed",
+        }
+}
+
+// RESPONSE
+status code 200
+
+// RESPONSE (ERROR)
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "error",
+            "id" : "1",
+            "status" : "status",
+            "code" : 304,
+            "title" : "NullPointerException",
+            "detail" : "exception"
+        }
+}
+
+
+DELETE
+// REQUEST
+{
+    "apiVersion" : "0.1",
+    "accessToken" : "sede",
+    "data" :
+        {
+            "kind" : "user",
+            "id" : "1"
+        }
+}
+
+
+
+// RESPONSE
+status 200
+
+// RESPONSE (ERROR)
+{
+    "apiVersion" : "0.1",
+    "data" :
+        {
+            "kind" : "error",
+            "id" : "1",
+            "status" : "status",
+            "code" : 304,
+            "title" : "NullPointerException",
+            "detail" : "exception"
+        }
+}
+

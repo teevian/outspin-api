@@ -1,0 +1,12 @@
+{
+    "apiVersion" : "0.0.1",
+    "data" :
+        {
+            "kind" : "error",
+            "id" : "1",
+            "status" : "status",
+            "code" : 304,
+            "title" : "NullPointerException",
+            "detail" : "exception"
+        }
+}
