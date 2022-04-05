@@ -46,7 +46,7 @@ exports.getInteractions = (request, response) => {
 exports.createInteractionByID = (request, response) => {
     let interaction = request.body.data;
   
-      let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
+      //let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
       con.query(sql_query, (error, result, field) => {
           if (error) {
               let errorTemplate = errorJSON;
@@ -63,7 +63,7 @@ exports.createInteractionByID = (request, response) => {
   exports.createInteraction = (request, response) => {
       let interaction = request.body.data;
   
-      let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
+      //let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
       con.query(sql_query, (error, result, field) => {
           if (error) {
               let errorTemplate = errorJSON;

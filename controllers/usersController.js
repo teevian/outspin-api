@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const { con } = require('../app');
 const { hash, verify } = require('../utils/hash');
-const { jwt_secret } = require("../config");
 const { authorize } = require("../middlewares/auth");
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../routes/json_template.json`, 'utf-8'));
@@ -14,7 +13,6 @@ const getUsersInsideJSON = JSON.parse(fs.readFileSync(`${__dirname}/../routes/ge
 exports.getUser = (request, response) => {
   const userID = request.params.id;
   const clubID = request.query.club;
-
   var user_thumb_attrs = ["'user' AS kind", "user.id", "user.photoURL"];
 
   //  " CAN'T TOUCH THIS! " - MC HAMMER, june 1990

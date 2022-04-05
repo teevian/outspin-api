@@ -52,7 +52,7 @@ exports.getClubs = (request, response) => {
         latitude = latitude * degToRad;
         longitude = longitude * degToRad;
 
-        let sql_query = mysql.format('SELECT (id, club_name, latitude, longitude, burn_number) FROM (SELECT * FROM club WHERE (latitude >= ? AND latitude <= ?)$
+        //let sql_query = mysql.format('SELECT (id, club_name, latitude, longitude, burn_number) FROM (SELECT * FROM club WHERE (latitude >= ? AND latitude <= ?)$
         //let sql_query1 = mysql.format('SELECT * FROM (SELECT * FROM club WHERE (latitude >= ? AND latitude <= ?) AND (longitude >= ? AND longitude <= ?)) AS $
 
         let sql_query1 = mysql.format(`SELECT * FROM club`);

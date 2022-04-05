@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { checkSchema } = require('express-validator');
 
 const { hash, verify } = require('../utils/hash');
-const { jwt_secret } = require("../config");
 const { authorize } = require("../middlewares/auth");
 const usersController = require('../controllers/usersController');
 const interactionsController = require('../controllers/interactionsController');
