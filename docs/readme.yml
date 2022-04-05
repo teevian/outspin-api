@@ -1,0 +1,41 @@
+#################################################################
+#       This README is for reference only, Jo  o                        #
+#       Hence don't be a pain in the ass this time!!            #
+#################################################################
+
+
+## START SERVER
+sudo npm start                  # using local npm
+sudo nodemon app.js             # using global npm
+sudo nodemon app.js 62127       # if not using the default port 62126
+
+## API folder structure
+## (in the future this shall be automatic):
+api/
+        controllers/
+        utils/
+        middlewares/
+        models/
+        routes/
+        views/
+        node_modules/
+        tests/
+        app.js
+        package.json
+
+## exmplanation for each folder
+controllers:    define business logic and app route handlers
+util:           helper functions used by controllers
+middlewares:    filter/interpret incoming requests before moving to the route handler
+models:         schema and validation for data parsing from the controller to database
+routes:         defines app routes with http methods (ex: router.post('/users/create', controller.create))
+views:          templates to be rendered by the server
+node_modules:   npm modules for nodejs
+tests:          unit tests/acceptance tests for the API
+app.js:         main file - intilializer
+package.json:   dependencies, scripts to run with npm and API version
+
+
+## USEFULL LINKS:
+https://www.freecodecamp.org/news/how-to-write-a-production-ready-node-and-express-app-f214f0b17d8c/
+https://expressjs.com/en/advanced/best-practice-performance.html
