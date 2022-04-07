@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const mysql2 = require('mysql2');
-/*
-dotenv.config({ path: ´${__dirname}/../config.env´ });
+
+dotenv.config({ path: '../config.env' });
 
 class DBConnection {
     constructor() {
@@ -63,4 +63,4 @@ const HttpStatusCodes = Object.freeze({
 });
 
 
-module.exports = new DBConnection().query; */
+module.exports = new DBConnection().query;
