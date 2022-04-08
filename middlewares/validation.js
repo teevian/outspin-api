@@ -2,30 +2,17 @@ const { validationResult } = require('express-validator');
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
 const { byString } = require('../utils/tools');
+const ApiError = require('../utils/apiError');
 
 exports.handleValidation = (req, res, next) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
-    console.log(errors.array)
-    return res.status(400).json({
-      errors: errors.array()
-    });
-  }
-  next();
-}
+    const msg =  errors.array()[0].msg;
+    next(new ApiError(msg,404));
 
+  }
+}
 exports.loginSchema = {
-  ".": {
-    custom: {
-      options: (value, { req, location, path }) => {
-        console.log(path);
-        console.log(value)
-        return true;
-      },
-      errorMessage: "Invalid phone number"
-    }
-  },
   "data.items": {
     isArray: {
       options: { min: 1, max: 1 },
@@ -82,7 +69,7 @@ exports.registerSchema = {
       custom: {
         options: (value, { req, location, path }) => {
           let phonePath = location + "." + path;
-          let countryCodePath = phonePath.slice(0,-5) + "countryCode";  
+          let countryCodePath = phonePath.slice(0,-5) + "countryCode";
           let number = phoneUtil.parse(byString(req, countryCodePath) + byString(req, phonePath));
           return phoneUtil.isValidNumber(number);
         },
@@ -114,4 +101,4 @@ exports.registerSchema = {
       }
     }
   };
-    
+

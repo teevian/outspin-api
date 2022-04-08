@@ -3,9 +3,8 @@ const fs = require("fs");
 
 const { con } = require("../app");
 
-const errorJSON = JSON.parse(fs.readFileSync(`${__dirname}/../routes/error_template.json`, "utf-8"));
-const notificationJSON = JSON.parse(fs.readFileSync(`${__dirname}/../routes/notification.json`, "utf-8"));
-const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../routes/json_template.json`, 'utf-8'));
+const errorJSON = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/errorTemplate.json`, "utf-8"));
+const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 
 exports.getInteractionsByID = (request, response) => {
     const userID = request.params.id;
@@ -45,7 +44,7 @@ exports.getInteractions = (request, response) => {
 
 exports.createInteractionByID = (request, response) => {
     let interaction = request.body.data;
-  
+
       //let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
       con.query(sql_query, (error, result, field) => {
           if (error) {
@@ -59,10 +58,10 @@ exports.createInteractionByID = (request, response) => {
           response.status(200).json(jsonTemplate);
       });
   }
-  
+
   exports.createInteraction = (request, response) => {
       let interaction = request.body.data;
-  
+
       //let sql_query = mysql.format('INSERT INTO user_user_interaction (user_id_sender, user_id_receiver, interaction_type) VALUES (?, ?, ?)', [interaction.sender$
       con.query(sql_query, (error, result, field) => {
           if (error) {
@@ -76,7 +75,7 @@ exports.createInteractionByID = (request, response) => {
           response.status(200).json(jsonTemplate);
       });
   }
-  
-  
-  
-  
+
+
+
+

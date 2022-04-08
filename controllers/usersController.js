@@ -4,10 +4,9 @@ const jwt = require('jsonwebtoken');
 const { con } = require('../app');
 const { hash, verify, createToken } = require('../utils/security');
 const { authorize } = require("../middlewares/auth");
+const query = require('../db/dbConnection');
 
-const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../routes/json_template.json`, 'utf-8'));
-const userThumbnailJSON = JSON.parse(fs.readFileSync(`${__dirname}/../routes/user_thumbnail.json`, 'utf-8'));
-const getUsersInsideJSON = JSON.parse(fs.readFileSync(`${__dirname}/../routes/get_users_inside.json`, 'utf-8'));
+const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 
 exports.getUser = (request, response) => {
     const userID = request.params.id;
@@ -93,31 +92,25 @@ exports.modifyUser = (request, response) => {
     });
 }
 
-const jsonTemplate1 = JSON.parse(fs.readFileSync(`${__dirname}/../models/json_template.json`, 'utf-8'));
-exports.loginUser = (request, response) => {
-    let kind = request.body.data.kind;
-    let user = request.body.data.items[0];
-    let query = mysql.format("SELECT id, firstName, lastName, password, photoURL FROM user WHERE user.phoneNumber = ? LIMIT 1", user.phone);
-    con.query(query, (error, result) => {
-        if (error) throw error;
-        if (result.length === 0) {
-            response.status(400).json({ status: "User doesn't exists" });
-            return;
-        }
-        verify(user.password, result[0].password).then((value) => {
-            if (value) {
-                let jsonResponse = JSON.parse(JSON.stringify(jsonTemplate1));
-                jsonResponse.data.items = result;
-                jsonResponse.data.kind = "user";
-                response.status(200).json(jsonResponse);
-            } else {
-                response.status(400).json({ status: "Wrong password" });
-            }
-        });
-    });
+exports.loginUser = async (request, response, next) => {
+    const kind = request.body.data.kind;
+    const user = request.body.data.items[0];
+
+    const result = await query("SELECT id, firstName, lastName, password, photoURL FROM user WHERE user.phoneNumber = ? LIMIT 1", [user.phone]);
+    if (result.length === 0)
+        return response.status(400).json({ status: "User doesn't exists" });
+
+    const isCorrect = await verify(user.password, result[0].password);
+    if (!isCorrect)
+        return  response.status(400).json({ status: "Wrong password" });
+
+    const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
+    jsonResponse.data.items = result;
+    jsonResponse.data.kind = "user";
+    return response.status(200).json(jsonResponse);
 }
 
-exports.registerUser = async (request, response) => {
+exports.registerUser = async (request, response, next) => {
     const user = request.body.data.items[0];
 
     const hashedPassword = await hash(user.password)
@@ -126,7 +119,7 @@ exports.registerUser = async (request, response) => {
     const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phone ];
     const result = await query(query_schema, inserts);
 
-    const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate1));
+    const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     user.password = hashedPassword.split(":")[1];
     user.id = result.insertId;
 
@@ -142,20 +135,3 @@ exports.removeUser = (request, response) => {
     response.status(200).send("DELETE METHOD user");
 }
 
-const query = require('../db/dbConnection');
-
-exports.authorization = async (request, response) => {
-    const user = request.body.data.items[0];
-    const userId = request.params.id;
-
-    if(!request.headers.authorization || !request.headers.authorization.startsWith('Bearer'))
-        return response.status(400).json({ error :  "Not a authorized" });
-
-    const token = request.headers.authorization.split(' ')[1];
-    const result =  await query('SELECT (token) FROM user WHERE id = ? LIMIT 1', [userId]);
-    if(token != result[0].token)
-        return response.status(400).json({ error :  "Not authorized" });
-
-    const newToken = await createToken(userId);
-    return response.status(200).json({ token: newToken });
-}

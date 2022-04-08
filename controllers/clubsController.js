@@ -4,8 +4,7 @@ const fs = require('fs');
 const { con } = require('../app');
 const { getRange, distance } = require('../utils/geolocation');
 
-const clubThumbnail = JSON.parse(fs.readFileSync(`${__dirname}/../routes/club_thumbnail.json`, 'utf-8'));
-const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../routes/json_template.json`, 'utf-8'));
+const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 
 exports.getClubs = (request, response) => {
     var json = jsonTemplate;
