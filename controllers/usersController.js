@@ -115,8 +115,8 @@ exports.registerUser = async (request, response, next) => {
 
     const hashedPassword = await hash(user.password)
 
-    const query_schema = "INSERT INTO user (firstName, lastName, password, countryCode, phoneNumber) VALUES (?,?,?,?,?)";
-    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phone ];
+    const query_schema = "INSERT INTO user (firstName, lastName, password, countryCode, phoneNumber, internationalNumber) VALUES (?,?,?,?,?,?)";
+    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phone, user.countryCode + user.phone ];
     const result = await query(query_schema, inserts);
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
@@ -127,7 +127,7 @@ exports.registerUser = async (request, response, next) => {
     await query("UPDATE user SET token = ? WHERE id = ?", [token, result.insertId]);
     user.token = token;
 
-    jsonResponse.data.items[0] = user;
+    jsonResponse.data.items = [ user ];
     return response.status(200).json(jsonResponse);
 }
 

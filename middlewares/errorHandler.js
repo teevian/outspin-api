@@ -13,5 +13,8 @@ exports.errorHandler = (err, req, res, next) => {
         message: err.message
     }];
 
+    if(!err.isOperational)
+        console.log(err.stack);
+
     return res.status(err.statusCode).json(jsonResponse)
 }

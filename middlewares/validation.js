@@ -6,11 +6,12 @@ const ApiError = require('../utils/apiError');
 
 exports.handleValidation = (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const msg =  errors.array()[0].msg;
-    next(new ApiError(msg,404));
 
+    if (!errors.isEmpty()) {
+        const msg =  errors.array()[0].msg;
+        next(new ApiError(msg,404));
   }
+    next();
 }
 exports.loginSchema = {
   "data.items": {
