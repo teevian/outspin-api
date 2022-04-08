@@ -23,5 +23,7 @@ router.delete("/", (request, response) => {
 router.get('/:id/interactions', interactionsController.getInteractionsByID);
 router.post('/:id/interactions', interactionsController.createInteractionByID);
 
+router.get('/:id/auth', awaitHandler(usersController.authorization));
+
 module.exports = router;
 

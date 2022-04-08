@@ -31,9 +31,6 @@ app.use("/users", users_router);
 const club_router = require('./routes/clubsRoutes');
 app.use("/clubs", club_router);
 
-const tokensRouter = require('./routes/tokensRoutes');
-app.use('/tokens', tokensRouter);
-
 const interactionRouter = require('./routes/interactionsRoutes');
 app.use("/notifications", interactionRouter);
 app.use('/interactions', interactionRouter);
