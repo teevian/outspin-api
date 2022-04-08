@@ -29,17 +29,19 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `countryCode` varchar(4) NOT NULL,
   `phoneNumber` varchar(12) NOT NULL,
-  `photoUrl` varchar(511) DEFAULT NULL,
+  `photo` varchar(511) DEFAULT NULL,
   `mainLocation` varchar(255) DEFAULT NULL,
   `clubId` int unsigned DEFAULT NULL,
-  `star` tinyint(1) DEFAULT '0',
   `burnNumber` mediumint unsigned DEFAULT '0',
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(511) DEFAULT NULL,
+  `internationalNumber` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `phoneNumber` (`phoneNumber`),
+  UNIQUE KEY `internationalNumber` (`internationalNumber`),
   KEY `club_id` (`clubId`),
+  KEY `internationalNumberIndex` (`internationalNumber`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`clubId`) REFERENCES `club` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +50,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (59,'Rebeca','Antónia','9e1c93be25951b56:cec2081aea6c2480897a14b79c478536e8038f19b8589eafc9e11b47ae3822d4d25e46761b77f1d1a56a324d09024b5241e2c8a5ce69416d0451b90a7ff9d940','+351','912035800',NULL,NULL,NULL,0,0,'2022-04-05 18:24:45'),(60,'Joana','João','7d589bbf6a035b9f:ac86cf20c8903fb7fc4586af9d7ac9df967d81a984a535fada67e47c68222cba1ce345a65d4dc1e601a98a17e20f757514ff6df3ad84c57ade5aebcd4935fefd','+351','912035820',NULL,NULL,NULL,0,0,'2022-04-05 18:26:02'),(63,'Joaquim','Ribeiro','66fcb765d97923a1:34a170fd256c4f3822e9134d48ae1a354b96b68e0e3dd4a534c1ede6ac5938bfab7f6b7d61c8169cf6e83aa67478337f88a29f009bbd3e7c02c2739307f16af9','+351','912035821',NULL,NULL,NULL,0,0,'2022-04-05 18:30:35'),(64,'Ricardo','Silva','cfcdb3676931bb50:a1f4843bf256bd9169b4af2907bfbf6f600e5c4cdd95a1108bd2adfd2816bb58df82881205b56eb77c074792ff3933406c2a24f5b6e951aeaa9eeeb1ffed5de5','+351','912045821',NULL,NULL,NULL,0,0,'2022-04-05 18:31:17'),(65,'Arminda','Antónia','2640bac5bf8535c9:c56617425824f14262267a1e865b66f928330149229fc255be85d8acf734cbd0de4f334ed382880753e12b998b75786deedb5cae9cb5963e5b9f23a3bd89b7ed','+351','912245821',NULL,NULL,NULL,0,0,'2022-04-05 18:32:59'),(66,'Pedro','Cortina','d3a33f297a881715:59d7d242f8bd8c4c5cb9bedba58d31ebfe38c10300f461023f08cbd362b3e7ddc564a84d4d73e140f3340e42361f69a2b8350d1b9fd180b6375755c848f33279','+351','912245826',NULL,NULL,NULL,0,0,'2022-04-05 18:34:22');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -61,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-05 19:05:59
+-- Dump completed on 2022-04-08 17:06:50
