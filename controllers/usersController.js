@@ -7,6 +7,7 @@ const { authorize } = require("../middlewares/auth");
 const query = require('../db/dbConnection');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
+const ApiError = require("../utils/apiError");
 
 exports.getUser = (request, response) => {
     const userID = request.params.id;
