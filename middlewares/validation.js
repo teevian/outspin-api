@@ -14,27 +14,23 @@ exports.handleValidation = (req, res, next) => {
     next();
 }
 exports.loginSchema = {
-  "data.items": {
+"data.items": {
     isArray: {
       options: { min: 1, max: 1 },
     },
     errorMessage: "Send one user to login"
   },
-  "data.kind": {
-    equals: { options: "login" },
-    errorMessage: "Template must be login kind"
-  },
-  "data.items.*.countryCode": {
+"data.items.*.countryCode": {
     isLength: {
       options: { min: 1, max: 4},
       errorMessage: "Invalid country code"
     }
 },
-"data.items.*.phone": {
+"data.items.*.phoneNumber": {
   custom: {
     options: (value, { req, location, path }) => {
       let phonePath = location + "." + path;
-      let countryCodePath = phonePath.slice(0,-5) + "countryCode";
+      let countryCodePath = phonePath.slice(0,-11) + "countryCode";
       let number = phoneUtil.parse(byString(req, countryCodePath) + byString(req, phonePath));
       return phoneUtil.isValidNumber(number);
     },
@@ -56,9 +52,17 @@ exports.registerSchema = {
       },
       errorMessage: "Send one user to login"
     },
-    "data.kind": {
-      equals: { options: "register" },
-      errorMessage: "Template must be register kind"
+    "data.items.*.firstName": {
+      isLength: {
+        options: { min: 1 },
+        errorMessage: "There isn't a first name"
+      }
+    },
+    "data.items.*.lastName": {
+      isLength: {
+        options: { min: 1 },
+        errorMessage: "There isn't a last name"
+      }
     },
     "data.items.*.countryCode": {
       isLength: {
@@ -66,11 +70,11 @@ exports.registerSchema = {
         errorMessage: "Invalid country code"
       }
     },
-    "data.items.*.phone": {
+    "data.items.*.phoneNumber": {
       custom: {
         options: (value, { req, location, path }) => {
           let phonePath = location + "." + path;
-          let countryCodePath = phonePath.slice(0,-5) + "countryCode";
+          let countryCodePath = phonePath.slice(0,-11) + "countryCode";
           let number = phoneUtil.parse(byString(req, countryCodePath) + byString(req, phonePath));
           return phoneUtil.isValidNumber(number);
         },
@@ -89,17 +93,5 @@ exports.registerSchema = {
         errorMessage: "Invalid password. Must have a number"
       }
     },
-    "data.items.*.firstName": {
-      isLength: {
-        options: { min: 1 },
-        errorMessage: "There isn't a first name"
-      }
-    },
-    "data.items.*.lastName": {
-      isLength: {
-        options: { min: 1 },
-        errorMessage: "There isn't a last name"
-      }
-    }
-  };
+};
 
