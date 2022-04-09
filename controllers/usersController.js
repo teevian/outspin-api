@@ -122,7 +122,7 @@ exports.registerUser = async (request, response, next) => {
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     const userR = {};
-    userR.id = insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
+    userR.id = result.insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
 
     const token = await createToken(result.insertId);
     await query("UPDATE user SET token = ? WHERE id = ?", [token, result.insertId]);
