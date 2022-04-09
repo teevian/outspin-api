@@ -97,7 +97,7 @@ exports.loginUser = async (request, response, next) => {
     const kind = request.body.data.kind;
     const user = request.body.data.items[0];
 
-    const result = await query("SELECT id, firstName, lastName, password, photoURL FROM user WHERE user.phoneNumber = ? LIMIT 1", [user.phone]);
+    const result = await query("SELECT id,firstName,lastName,countryCode,phoneNumber,token,password FROM user WHERE internationalNumber = ?", [ user.countryCode + user.phoneNumber ]);
     if (result.length === 0)
         return response.status(400).json({ status: "User doesn't exists" });
 
@@ -107,7 +107,7 @@ exports.loginUser = async (request, response, next) => {
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     jsonResponse.data.items = result;
-    jsonResponse.data.kind = "user";
+    delete jsonResponse.data.items[0].password;
     return response.status(200).json(jsonResponse);
 }
 
@@ -117,17 +117,18 @@ exports.registerUser = async (request, response, next) => {
     const hashedPassword = await hash(user.password)
 
     const query_schema = "INSERT INTO user (firstName, lastName, password, countryCode, phoneNumber, internationalNumber) VALUES (?,?,?,?,?,?)";
-    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phone, user.countryCode + user.phone ];
+    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phoneNumber, user.countryCode + user.phoneNumber ];
     const result = await query(query_schema, inserts);
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
-    user.id = result.insertId;
+    const userR = {};
+    userR.id = insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
 
     const token = await createToken(result.insertId);
     await query("UPDATE user SET token = ? WHERE id = ?", [token, result.insertId]);
-    user.token = token;
+    userR.token = token;
 
-    jsonResponse.data.items = [ user ];
+    jsonResponse.data.items =  [ userR ];
     return response.status(200).json(jsonResponse);
 }
 
@@ -135,7 +136,7 @@ exports.authorization = async (request, response, next) => {
     const userId = request.params.id;
 
     if(!request.headers.authorization || !request.headers.authorization.startsWith('Bearer'))
-        throw new ApiError('Not authorized', 400);
+        throw new ApiError('Token missing', 400);
 
     const token = request.headers.authorization.split(' ')[1];
     const result =  await query('SELECT (token) FROM user WHERE id = ? LIMIT 1', [userId]);
@@ -143,7 +144,7 @@ exports.authorization = async (request, response, next) => {
         throw new ApiError("Invalid id", 400);
 
     if(token != result[0].token)
-        throw new ApiError('Not authorized', 400);
+        throw new ApiError('Unauthorized', 401);
     const newToken = await createToken(userId);
 
     const json = JSON.parse(JSON.stringify(jsonTemplate));
