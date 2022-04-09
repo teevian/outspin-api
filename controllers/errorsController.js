@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`));
 
-exports.errorHandler = (err, req, res, next) => {
+exports.errorsHandler = (err, req, res, next) => {
     err.statusCode = err.statusCode || '500';
     err.status = err.status || 'error';
 

@@ -1,4 +1,4 @@
-const awaitHandler = (middleware) => {
+module.exports.catchAsync = (middleware) => {
     return async (req, res, next) => {
         try {
             await middleware(req, res, next)
@@ -8,4 +8,3 @@ const awaitHandler = (middleware) => {
     }
 }
 
-module.exports.awaitHandler = awaitHandler;

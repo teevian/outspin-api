@@ -4,7 +4,7 @@ const app = express();
 const mysql = require("mysql2");
 const dotenv = require('dotenv');
 
-const { errorHandler } = require('./middlewares/errorHandler');
+const { errorsHandler } = require('./controllers/errorsController');
 const ApiError = require('./utils/apiError');
 
 dotenv.config({ path: './config.env' });
@@ -39,7 +39,7 @@ app.all('*', (req, res, next) => {
     next(new ApiError(`Can't find ${req.originalUrl} on this server`, 404))
 });
 
-app.use(errorHandler);
+app.use(errorsHandler);
 
 function closeDbConnection(con) {
   console.log("con " + con.state);

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { con } = require('../app');
 const { hash, verify, createToken } = require('../utils/security');
 const { authorize } = require("../middlewares/auth");
+const { catchAsync } = require("../middlewares/catchAsync");
 const query = require('../db/dbConnection');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
@@ -93,7 +94,7 @@ exports.modifyUser = (request, response) => {
     });
 }
 
-exports.loginUser = async (request, response, next) => {
+exports.loginUser = catchAsync(async (request, response, next) => {
     const kind = request.body.data.kind;
     const user = request.body.data.items[0];
 
@@ -109,9 +110,9 @@ exports.loginUser = async (request, response, next) => {
     jsonResponse.data.items = result;
     delete jsonResponse.data.items[0].password;
     return response.status(200).json(jsonResponse);
-}
+});
 
-exports.registerUser = async (request, response, next) => {
+exports.registerUser = catchAsync(async (request, response, next) => {
     const user = request.body.data.items[0];
 
     const hashedPassword = await hash(user.password)
@@ -130,9 +131,9 @@ exports.registerUser = async (request, response, next) => {
 
     jsonResponse.data.items =  [ userR ];
     return response.status(200).json(jsonResponse);
-}
+});
 
-exports.authorization = async (request, response, next) => {
+exports.authorization = catchAsync(async (request, response, next) => {
     const userId = request.params.id;
 
     if(!request.headers.authorization || !request.headers.authorization.startsWith('Bearer'))
@@ -150,7 +151,7 @@ exports.authorization = async (request, response, next) => {
     const json = JSON.parse(JSON.stringify(jsonTemplate));
     json.data.items = [ { token : newToken } ];
     return response.status(200).json(json);
-}
+});
 
 
 
