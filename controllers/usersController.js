@@ -1,14 +1,16 @@
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
-const { con } = require('../app');
+let con;
 const { hash, verify, createToken } = require('../utils/security');
 const { authorize } = require("../middlewares/auth");
 const { catchAsync } = require("../middlewares/catchAsync");
+const UserModel = require('../models/usersModel');
 const query = require('../db/dbConnection');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 const ApiError = require("../utils/apiError");
+
 
 exports.getUser = (request, response) => {
     const userID = request.params.id;
@@ -95,10 +97,11 @@ exports.modifyUser = (request, response) => {
 }
 
 exports.loginUser = catchAsync(async (request, response, next) => {
+
     const kind = request.body.data.kind;
     const user = request.body.data.items[0];
 
-    const result = await query("SELECT id,firstName,lastName,countryCode,phoneNumber,token,password FROM user WHERE internationalNumber = ?", [ user.countryCode + user.phoneNumber ]);
+    const result = await UserModel.findByPhone(["id", "firstName", "lastName", "countryCode", "phoneNumber", "token", "password"], user.countryCode + user.phoneNumber );
     if (result.length === 0)
         return response.status(400).json({ status: "User doesn't exists" });
 
@@ -140,7 +143,7 @@ exports.authorization = catchAsync(async (request, response, next) => {
         throw new ApiError('Token missing', 400);
 
     const token = request.headers.authorization.split(' ')[1];
-    const result =  await query('SELECT (token) FROM user WHERE id = ? LIMIT 1', [userId]);
+    const result =  await UserModel.findById(["token"], userId);
     if(result.length === 0)
         throw new ApiError("Invalid id", 400);
 

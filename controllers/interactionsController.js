@@ -1,8 +1,7 @@
 const mysql = require("mysql2");
 const fs = require("fs");
 
-const { con } = require("../app");
-
+let con;
 const errorJSON = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/errorTemplate.json`, "utf-8"));
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 

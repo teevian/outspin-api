@@ -1,29 +1,12 @@
 
 const express = require("express");
 const app = express();
-const mysql = require("mysql2");
 const dotenv = require('dotenv');
 
 const { errorsHandler } = require('./controllers/errorsController');
 const ApiError = require('./utils/apiError');
 
 dotenv.config({ path: './config.env' });
-
-const con = mysql.createConnection({
-	host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-     	database: process.env.DB_DATABASE
-});
-
-con.connect((err) => {
-  if(err) {
-    console.log("Database Connection Error");
-  }
-  console.log((new Date()) + " Connected to the database");
-});
-
-exports.con = con;
 
 const users_router = require("./routes/usersRoutes");
 app.use("/users", users_router);

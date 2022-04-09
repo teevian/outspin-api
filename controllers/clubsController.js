@@ -1,10 +1,10 @@
 const mysql = require("mysql2");
 const fs = require('fs');
 
-const { con } = require('../app');
 const { getRange, distance } = require('../utils/geolocation');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
+let con;
 
 exports.getClubs = (request, response) => {
     var json = jsonTemplate;
