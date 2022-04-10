@@ -39,9 +39,8 @@ exports.errorsHandler = (err, req, res, next) => {
 
     if(!err.isOperational)
         console.log(err);
-
-    if(process.env.NODE_ENV = "development")
+    if(process.env.NODE_ENV === "development")
         return sendErrorDev(err,res);
-    else if(process.env.NODE_ENV = "production")
+    else if(process.env.NODE_ENV === "production")
         return sendErrorProd(err,res);
 }
