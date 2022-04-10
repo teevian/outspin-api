@@ -2,9 +2,9 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
 let con;
-const { hash, verify, createToken } = require('../utils/security');
+const { hash, verify, createAccessToken, createRefreshToken, verifyRefreshToken } = require('../utils/security');
 const catchAsync = require("../middlewares/catchAsyncMiddleware");
-const UserModel = require('../models/usersModel');
+const userModel = require('../models/usersModel');
 const query = require('../db/dbConnection');
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
@@ -96,18 +96,20 @@ exports.modifyUser = (request, response) => {
 }
 
 exports.loginUser = catchAsync(async (request, response, next) => {
-
     const kind = request.body.data.kind;
     const user = request.body.data.items[0];
-    user.internationalNumber = "+" + user.countryCode + user.phoneNumber;
+    user.internationalNumber = user.countryCode + user.phoneNumber;
 
-    const result = await UserModel.findByPhone(["id", "firstName", "lastName", "countryCode", "phoneNumber", "token", "password"], user.internationalNumber );
+    const result = await userModel.findByPhone(["id", "firstName", "lastName", "countryCode", "phoneNumber", "password"], user.internationalNumber );
     if (result.length === 0)
         return response.status(400).json({ status: "User doesn't exists" });
 
     const isCorrect = await verify(user.password, result[0].password);
     if (!isCorrect)
         return  response.status(400).json({ status: "Wrong password" });
+
+    result[0].accessToken = await createAccessToken(result[0].id, "user");
+    result[0].refreshToken = await createRefreshToken(result[0].id, "user");
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     jsonResponse.data.items = result;
@@ -117,7 +119,7 @@ exports.loginUser = catchAsync(async (request, response, next) => {
 
 exports.registerUser = catchAsync(async (request, response, next) => {
     const user = request.body.data.items[0];
-    user.internationalNumber = "+" + user.countryCode + user.phoneNumber;
+    user.internationalNumber =  user.countryCode + user.phoneNumber;
 
     const hashedPassword = await hash(user.password)
 
@@ -125,14 +127,12 @@ exports.registerUser = catchAsync(async (request, response, next) => {
     const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phoneNumber, user.internationalNumber ];
     const result = await query(query_schema, inserts);
 
-    const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     const userR = {};
     userR.id = result.insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
+    userR.accessToken = await createAccessToken(result.insertId, "user");
+    userR.refreshToken = await createRefreshToken(result.insertId, "user");
 
-    const token = await createToken(result.insertId, "user");
-    await query("UPDATE user SET token = ? WHERE id = ?", [token, result.insertId]);
-    userR.token = token;
-
+    const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
     jsonResponse.data.items =  [ userR ];
     return response.status(200).json(jsonResponse);
 });
@@ -144,21 +144,17 @@ exports.authorization = catchAsync(async (request, response, next) => {
         throw new ApiError('Token missing', 400);
 
     const token = request.headers.authorization.split(' ')[1];
-    const result =  await UserModel.findById(["token"], userId);
-    if(result.length === 0)
-        throw new ApiError("Invalid id", 400);
+    const tokenParams = await verifyRefreshToken(token);
+    console.log(tokenParams);
 
-    if(token != result[0].token)
-        throw new ApiError('Unauthorized', 401);
-    const newToken = await createToken(userId, "user");
-
+    const newToken = await createAccessToken(userId, "user");
     const json = JSON.parse(JSON.stringify(jsonTemplate));
-    json.data.items = [ { token : newToken } ];
+    json.data.items = [ { accessToken : newToken } ];
     return response.status(200).json(json);
 });
 
 exports.checkPhoneNumber = catchAsync(async (req, res, next) => {
-    const result = await UserModel.findByPhone(["id"], "+"+ req.query.countryCode.replace(/['"]+/g, '') + req.query.phoneNumber.replace(/['"]+/g, ''));
+    const result = await userModel.findByPhone(["id"], "+"+ req.query.countryCode.replace(/['"]+/g, '') + req.query.phoneNumber.replace(/['"]+/g, ''));
     if(result.length === 0)
         return next(new ApiError("User with the given phoneNumber doesn´t exit! Please register"));
 

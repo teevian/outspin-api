@@ -1,23 +1,19 @@
+const mysql = require('mysql2');
 
 const query = require("../db/dbConnection");
+const queryConstructor = require("../db/queryConstructor");
 
-const { selectQuery } = require("../db/queryConstructor");
+const tableName = "user";
 
-const mysql = require('mysql2');
-class UserModel {
-    tableName = "user";
-
-    findById = async (fields, id) => {
-        const sqlFields = await selectQuery(fields);
-        const sqlQuery = mysql.format( sqlFields + " FROM ??", [this.tableName]);
-        return await query(sqlQuery + " WHERE id = ?", [id]);
-    }
-
-    findByPhone = async (fields, internationalNumber) => {
-        const sqlFields = await selectQuery(fields);
-        const sqlQuery = mysql.format(sqlFields + " FROM ??", [this.tableName]);
-        return await query(sqlQuery + " WHERE internationalNumber = ?", [internationalNumber]);
-    }
+exports.findById = async (fields, id) => {
+    const sqlFields = await queryConstructor.selectQuery(fields);
+    const sqlQuery = mysql.format( sqlFields + " FROM ??", [tableName]);
+    return await query(sqlQuery + " WHERE id = ?", [id]);
 }
 
-module.exports = new UserModel;
+exports.findByPhone = async (fields, internationalNumber) => {
+    const sqlFields = await queryConstructor.selectQuery(fields);
+    const sqlQuery = mysql.format(sqlFields + " FROM ??", [tableName]);
+    return await query(sqlQuery + " WHERE internationalNumber = ?", [internationalNumber]);
+}
+

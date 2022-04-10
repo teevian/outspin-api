@@ -25,6 +25,7 @@ router.get('/:id/interactions', interactionsController.getInteractionsByID);
 router.post('/:id/interactions', interactionsController.createInteractionByID);
 
 router.get('/:id/auth', usersController.authorization);
+router.get("/:id/autho", authMiddleware.authorize, (req, res) => {res.status(400).json({status: "success"})});
 
 module.exports = router;
 
