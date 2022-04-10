@@ -99,8 +99,9 @@ exports.loginUser = catchAsync(async (request, response, next) => {
 
     const kind = request.body.data.kind;
     const user = request.body.data.items[0];
+    user.internationalNumber = "+" + user.countryCode + user.phoneNumber;
 
-    const result = await UserModel.findByPhone(["id", "firstName", "lastName", "countryCode", "phoneNumber", "token", "password"], user.countryCode + user.phoneNumber );
+    const result = await UserModel.findByPhone(["id", "firstName", "lastName", "countryCode", "phoneNumber", "token", "password"], user.internationalNumber );
     if (result.length === 0)
         return response.status(400).json({ status: "User doesn't exists" });
 
@@ -116,11 +117,12 @@ exports.loginUser = catchAsync(async (request, response, next) => {
 
 exports.registerUser = catchAsync(async (request, response, next) => {
     const user = request.body.data.items[0];
+    user.internationalNumber = "+" + user.countryCode + user.phoneNumber;
 
     const hashedPassword = await hash(user.password)
 
     const query_schema = "INSERT INTO user (firstName, lastName, password, countryCode, phoneNumber, internationalNumber) VALUES (?,?,?,?,?,?)";
-    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phoneNumber, user.countryCode + user.phoneNumber ];
+    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phoneNumber, user.internationalNumber ];
     const result = await query(query_schema, inserts);
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));

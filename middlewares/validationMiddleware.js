@@ -4,6 +4,7 @@ const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 const { byString } = require('../utils/tools');
 const ApiError = require('../utils/apiError');
 
+
 exports.handleValidation = (req, res, next) => {
   const errors = validationResult(req);
 
@@ -13,85 +14,67 @@ exports.handleValidation = (req, res, next) => {
   }
     next();
 }
-exports.loginSchema = {
-"data.items": {
-    isArray: {
-      options: { min: 1, max: 1 },
-    },
-    errorMessage: "Send one user to login"
-  },
-"data.items.*.countryCode": {
+
+const firstName = {
     isLength: {
-      options: { min: 1, max: 4},
-      errorMessage: "Invalid country code"
+        options: { min: 1, max: 15 },
+        errorMessage: "There isn't a first name"
     }
-},
-"data.items.*.phoneNumber": {
-  custom: {
-    options: (value, { req, location, path }) => {
-      let phonePath = location + "." + path;
-      let countryCodePath = phonePath.slice(0,-11) + "countryCode";
-      let number = phoneUtil.parse(byString(req, countryCodePath) + byString(req, phonePath));
-      return phoneUtil.isValidNumber(number);
-    },
-    errorMessage: "Invalid phone number"
-  }
-},
-"data.items.*.password": {
-  isLength: {
-    options: { min: 9, max: 20},
-    errorMessage: "Invalid password. Must have 9 to 20 characters"
-  }
-}
 };
 
-exports.registerSchema = {
-    "data.items": {
-      isArray: {
-        options: { min: 1, max: 1 },
-      },
-      errorMessage: "Send one user to login"
-    },
-    "data.items.*.firstName": {
-      isLength: {
-        options: { min: 1 },
-        errorMessage: "There isn't a first name"
-      }
-    },
-    "data.items.*.lastName": {
-      isLength: {
-        options: { min: 1 },
+const lastName = {
+    isLength: {
+        options: { min: 1, max: 15 },
         errorMessage: "There isn't a last name"
-      }
-    },
-    "data.items.*.countryCode": {
-      isLength: {
-        options: { min: 1, max: 4},
-        errorMessage: "Invalid country code"
-      }
-    },
-    "data.items.*.phoneNumber": {
-      custom: {
+    }
+};
+
+const countryCode = {
+    isLength: {
+        options: { min: 1, max: 3},
+        errorMessage: "Invalid country code",
+    }
+};
+
+const phoneNumber = {
+    custom: {
         options: (value, { req, location, path }) => {
-          let phonePath = location + "." + path;
-          let countryCodePath = phonePath.slice(0,-11) + "countryCode";
-          let number = phoneUtil.parse(byString(req, countryCodePath) + byString(req, phonePath));
-          return phoneUtil.isValidNumber(number);
+            let phonePath = location + "." + path;
+            let countryCodePath = phonePath.slice(0,-11) + "countryCode";
+            let number = phoneUtil.parse("+"+ byString(req, countryCodePath) + byString(req, phonePath));
+            return phoneUtil.isValidNumber(number);
         },
         errorMessage: "Invalid phone number"
-      }
-    },
-    "data.items.*.password": {
-      isLength: {
-        options: { minLength: 8, minLowerCase: 15 },
-        errorMessage: "Invalid password. Must have 8 to 15 characters"
-      },
-      custom: {
-        options: (value) => {
-          return /\d/.test(value);
-        },
-        errorMessage: "Invalid password. Must have a number"
-      }
-    },
+    }
 };
+
+const password = {
+    isLength: {
+        options: { min: 9, max: 20},
+        errorMessage: "Invalid password. Must have 9 to 20 characters"
+    }
+};
+
+const items = {
+    isArray: {
+        options: { min: 1, max: 1 },
+    },
+    errorMessage: "Send one user to login"
+};
+
+exports.loginSchema = {
+    "data.items": items,
+    "data.items.*.countryCode": countryCode,
+    "data.items.*.phoneNumber": phoneNumber,
+    "data.items.*.password": password,
+}
+
+exports.registerSchema = {
+    "data.items": items,
+    "data.items.*.firstName": firstName,
+    "data.items.*.lastName": lastName,
+    "data.items.*.countryCode": countryCode,
+    "data.items.*.phoneNumber": phoneNumber,
+    "data.items.*.password": password,
+}
 
