@@ -14,12 +14,13 @@ exports.verify = function verify(password, hash) {
     return bcrypt.compare(password,hash);
 }
 
-exports.createToken = function createToken(userId) {
+exports.createToken = function createToken(id, role) {
     return new Promise((resolve, reject) => {
         const secret = process.env.JWT_SECRET;
         const token = jwt.sign(
             {
-                user: userId
+                id: id,
+                role: role
             },
             secret,
             {

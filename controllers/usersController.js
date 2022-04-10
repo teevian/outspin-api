@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 
 let con;
 const { hash, verify, createToken } = require('../utils/security');
-const { authorize } = require("../middlewares/auth");
-const { catchAsync } = require("../middlewares/catchAsync");
+const catchAsync = require("../middlewares/catchAsyncMiddleware");
 const UserModel = require('../models/usersModel');
 const query = require('../db/dbConnection');
 
@@ -128,7 +127,7 @@ exports.registerUser = catchAsync(async (request, response, next) => {
     const userR = {};
     userR.id = result.insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
 
-    const token = await createToken(result.insertId);
+    const token = await createToken(result.insertId, "user");
     await query("UPDATE user SET token = ? WHERE id = ?", [token, result.insertId]);
     userR.token = token;
 
@@ -149,7 +148,7 @@ exports.authorization = catchAsync(async (request, response, next) => {
 
     if(token != result[0].token)
         throw new ApiError('Unauthorized', 401);
-    const newToken = await createToken(userId);
+    const newToken = await createToken(userId, "user");
 
     const json = JSON.parse(JSON.stringify(jsonTemplate));
     json.data.items = [ { token : newToken } ];

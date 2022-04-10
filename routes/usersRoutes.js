@@ -5,10 +5,8 @@ const { checkSchema } = require('express-validator');
 
 const usersController = require('../controllers/usersController');
 const interactionsController = require('../controllers/interactionsController');
-const { loginSchema, registerSchema, handleValidation } = require('../middlewares/validation');
-const { catchAsync } = require('../middlewares/catchAsync');
-const { authorize } = require('../middlewares/auth');
-const awaitHandler = catchAsync;
+const validationMiddleware = require('../middlewares/validationMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 router.use(express.json());
 
@@ -16,8 +14,8 @@ router.use(express.json());
 router.put("/:id", usersController.modifyUser);
 router.delete("/:id", usersController.removeUser);
 
-router.post('/register', checkSchema(registerSchema), handleValidation, awaitHandler(usersController.registerUser));
-router.post('/login', checkSchema(loginSchema), handleValidation, usersController.loginUser);
+router.post('/register', checkSchema(validationMiddleware.registerSchema), validationMiddleware.handleValidation, usersController.registerUser);
+router.post('/login', checkSchema(validationMiddleware.loginSchema), validationMiddleware.handleValidation, usersController.loginUser);
 router.get("/checkPhoneNumber", usersController.checkPhoneNumber);
 router.delete("/", (request, response) => {
   response.status(200).send("DELETE METHOD user");
@@ -26,8 +24,7 @@ router.delete("/", (request, response) => {
 router.get('/:id/interactions', interactionsController.getInteractionsByID);
 router.post('/:id/interactions', interactionsController.createInteractionByID);
 
-router.get('/:id/auth', awaitHandler(usersController.authorization));
-router.get('/:id/autho', authorize);
+router.get('/:id/auth', usersController.authorization);
 
 module.exports = router;
 

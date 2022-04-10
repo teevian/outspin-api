@@ -1,4 +1,4 @@
-module.exports.catchAsync = (middleware) => {
+module.exports = (middleware) => {
     return async (req, res, next) => {
         try {
             await middleware(req, res, next)
