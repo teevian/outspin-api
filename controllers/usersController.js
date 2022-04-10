@@ -159,7 +159,7 @@ exports.authorization = catchAsync(async (request, response, next) => {
 exports.checkPhoneNumber = catchAsync(async (req, res, next) => {
     const result = await UserModel.findByPhone(["id"], "+"+ req.query.countryCode.replace(/['"]+/g, '') + req.query.phoneNumber.replace(/['"]+/g, ''));
     if(result.length === 0)
-        next(new ApiError("User with the given phoneNumber doesn´t exit! Please register"));
+        return next(new ApiError("User with the given phoneNumber doesn´t exit! Please register"));
 
     res.status(200).json({});
 })
