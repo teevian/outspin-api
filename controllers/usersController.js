@@ -156,7 +156,13 @@ exports.authorization = catchAsync(async (request, response, next) => {
     return response.status(200).json(json);
 });
 
+exports.checkPhoneNumber = catchAsync(async (req, res, next) => {
+    const result = await UserModel.findByPhone(["id"], "+"+ req.query.countryCode.replace(/['"]+/g, '') + req.query.phoneNumber.replace(/['"]+/g, ''));
+    if(result.length === 0)
+        next(new ApiError("User with the given phoneNumber doesn´t exit! Please register"));
 
+    res.status(200).json({});
+})
 
 exports.removeUser = (request, response) => {
     response.status(200).send("DELETE METHOD user");
