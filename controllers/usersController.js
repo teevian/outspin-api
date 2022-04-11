@@ -118,22 +118,17 @@ exports.loginUser = catchAsync(async (request, response, next) => {
 });
 
 exports.registerUser = catchAsync(async (request, response, next) => {
-    const user = request.body.data.items[0];
+    let user = request.body.data.items[0];
     user.internationalNumber =  user.countryCode + user.phoneNumber;
 
-    const hashedPassword = await hash(user.password)
+    user.hashedPassword = await hash(user.password)
 
-    const query_schema = "INSERT INTO user (firstName, lastName, password, countryCode, phoneNumber, internationalNumber) VALUES (?,?,?,?,?,?)";
-    const inserts = [ user.firstName, user.lastName, hashedPassword, user.countryCode, user.phoneNumber, user.internationalNumber ];
-    const result = await query(query_schema, inserts);
-
-    const userR = {};
-    userR.id = result.insertId; userR.firstName = user.firstName; userR.lastName = user.lastName; userR.countryCoode = user.countryCode; userR.phoneNumber = user.phoneNumber;
-    userR.accessToken = await createAccessToken(result.insertId, "user");
-    userR.refreshToken = await createRefreshToken(result.insertId, "user");
+    user = await userModel.createOne(user);
+    user.accessToken = await createAccessToken(user.insertId, "user");
+    user.refreshToken = await createRefreshToken(user.insertId, "user");
 
     const jsonResponse = JSON.parse(JSON.stringify(jsonTemplate));
-    jsonResponse.data.items =  [ userR ];
+    jsonResponse.data.items =  [ user ];
     return response.status(200).json(jsonResponse);
 });
 
@@ -145,7 +140,6 @@ exports.authorization = catchAsync(async (request, response, next) => {
 
     const token = request.headers.authorization.split(' ')[1];
     const tokenParams = await verifyRefreshToken(token);
-    console.log(tokenParams);
 
     const newToken = await createAccessToken(userId, "user");
     const json = JSON.parse(JSON.stringify(jsonTemplate));
