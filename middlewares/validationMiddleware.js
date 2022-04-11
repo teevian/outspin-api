@@ -17,14 +17,14 @@ exports.handleValidation = (req, res, next) => {
 
 const firstName = {
     isLength: {
-        options: { min: 1, max: 15 },
+        options: { min: 2, max: 20 },
         errorMessage: "There isn't a first name"
     }
 };
 
 const lastName = {
     isLength: {
-        options: { min: 1, max: 15 },
+        options: { min: 2, max: 20 },
         errorMessage: "There isn't a last name"
     }
 };
@@ -50,8 +50,8 @@ const phoneNumber = {
 
 const password = {
     isLength: {
-        options: { min: 9, max: 20},
-        errorMessage: "Invalid password. Must have 9 to 20 characters"
+        options: { min: 8, max: 15},
+        errorMessage: "Invalid password. Must have 8 to 15 characters"
     }
 };
 

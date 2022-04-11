@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require("./catchAsyncMiddleware");
 const ApiError = require('../utils/apiError');
 const UserModel = require("../models/usersModel");
+const { verifyAccessToken } = require('../utils/security');
 
 dotenv.config({ path: '../config.env' });
 
@@ -17,7 +18,7 @@ exports.authorize = catchAsync(async (req, res, next) => {
     if(!token)
         return next(new ApiError("You are not logged in! Please log in to gain access", 401));
 
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const decoded = await verifyAccessToken(token);
     req.id = decoded.id;
     req.role = decoded.role;
 
