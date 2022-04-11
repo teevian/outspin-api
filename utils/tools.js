@@ -17,3 +17,7 @@ exports.byString = function(object, path) {
   }
   return object;
 }
+
+exports.simpleDeepClone = (object) => {
+    return JSON.parse(JSON.stringify(object));
+}

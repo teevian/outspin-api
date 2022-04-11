@@ -2,6 +2,7 @@ const mysql = require('mysql2');
 
 const query = require("../db/dbConnection");
 const queryConstructor = require("../db/queryConstructor");
+const ApiError = require("../utils/apiError");
 
 const tableName = "user";
 
@@ -27,3 +28,15 @@ exports.createOne = async (user) => {
     return user;
 }
 
+exports.updateOne = async (user) => {
+    const userId = user.id;
+    delete user.id;
+    const querySchema = await queryConstructor.updateQuery(user);
+
+    querySchema.sql = mysql.format(querySchema.sql, tableName) + " WHERE id = ?";
+    querySchema.values.push(userId);
+    const result = await query(querySchema.sql, querySchema.values);
+    if(result.affectedRows === 0)
+        throw new ApiError("Invalid id. Please register", 400);
+    return;
+}

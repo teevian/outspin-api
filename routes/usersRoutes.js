@@ -6,12 +6,12 @@ const usersController = require('../controllers/usersController');
 const interactionsController = require('../controllers/interactionsController');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const authMiddleware = require('../middlewares/authMiddleware');
+const photoMiddleware = require("../middlewares/photoMiddleware");
 
 
 const router = express.Router();
 
-router.patch('/:id/photo', usersController.uploadUserPhoto, usersController.resizeUserPhoto, (req, res) => { res.status(200).send(); });
-router.post("/:id/img",(req, res) => {res.status(200).json({status: "success"})});
+router.patch('/:id/photo', photoMiddleware.uploadUserPhoto, photoMiddleware.resizeUserPhoto, checkSchema(validationMiddleware.updateSchema), validationMiddleware.handleValidation,usersController.updateUser);
 router.put("/:id", usersController.modifyUser);
 router.delete("/:id", usersController.removeUser);
 

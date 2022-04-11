@@ -19,7 +19,7 @@ const firstName = {
     isLength: {
         options: { min: 2, max: 20 },
         errorMessage: "There isn't a first name"
-    }
+   }
 };
 
 const lastName = {
@@ -59,8 +59,12 @@ const items = {
     isArray: {
         options: { min: 1, max: 1 },
     },
-    errorMessage: "Send one user to login"
+    errorMessage: "Send on user"
 };
+
+const optional = {
+    optional: {}
+}
 
 exports.loginSchema = {
     "data.items": items,
@@ -78,3 +82,16 @@ exports.registerSchema = {
     "data.items.*.password": password,
 }
 
+exports.updateSchema = {
+    "data.items": items,
+    "data.items.*.firstName": { ...optional, ...firstName },
+    "data.items.*.lastName": { ...optional, ...lastName },
+    "data.items.*.countryCode": { ...optional, ...countryCode },
+    "data.items.*.phoneNumber": { ...optional, ...phoneNumber },
+    "data.items.*.password": {
+        not: {},
+        exists: {
+            errorMessage: "Cannot change password in this path"
+        }
+    }
+}

@@ -42,3 +42,14 @@ exports.selectQuery = async (fields) => {
         sql += mysql.format(",??", fields[i]);
     return sql;
 }
+
+exports.updateQuery = async (params) => {
+    console.log(params);
+    const paramsArray = await seperateParams(params);
+
+    let sql = "UPDATE ?? SET " + mysql.format("?? = ?", paramsArray.keys[0]);
+    for(let i = 1; i < paramsArray.keys.length; ++i)
+        sql += mysql.format(", ?? = ?", paramsArray.keys[i]);
+
+    return { sql, values: paramsArray.values };
+}
