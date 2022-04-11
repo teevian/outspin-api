@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { checkSchema } = require('express-validator');
 
@@ -8,9 +7,11 @@ const interactionsController = require('../controllers/interactionsController');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-router.use(express.json());
 
-//router.get('/:id', usersController.getUser);
+const router = express.Router();
+
+router.patch('/:id/photo', usersController.uploadUserPhoto, usersController.resizeUserPhoto, (req, res) => { res.status(200).send(); });
+router.post("/:id/img",(req, res) => {res.status(200).json({status: "success"})});
 router.put("/:id", usersController.modifyUser);
 router.delete("/:id", usersController.removeUser);
 

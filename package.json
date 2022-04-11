@@ -28,8 +28,10 @@
                 "google-libphonenumber": "^3.2.27",
                 "helmet": "^5.0.2",
                 "jsonwebtoken": "^8.5.1",
+                "multer": "^1.4.4",
                 "mysql2": "^2.3.3",
-                "nodemon": "^1.11.1"
+                "nodemon": "^1.11.1",
+                "sharp": "^0.30.3"
         },
         "nodemonConfig": {
                 "ignore": [

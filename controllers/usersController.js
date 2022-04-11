@@ -1,5 +1,7 @@
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const multer = require("multer");
+const sharp = require("sharp");
 
 let con;
 const { hash, verify, createAccessToken, createRefreshToken, verifyRefreshToken } = require('../utils/security');
@@ -10,6 +12,45 @@ const query = require('../db/dbConnection');
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 const ApiError = require("../utils/apiError");
 
+/*
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, process.env.IMG_DIRECTORY);
+    },
+    filename: (req, file, cb) => {
+        const ext = file.mimetype.split("/")[1];
+        cb(null, "user-" + req.id + "-" + Date.now() + "." + ext);
+    }
+});*/
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+    if(file.mimetype.startsWith("image")){
+        cb(null, true);
+    } else {
+        cb(new ApiError("Not an image! Please upload a image!", 400));
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+});
+
+exports.uploadUserPhoto = upload.single("photo");
+exports.resizeUserPhoto = (req, res, next) => {
+    if(!req.file) return next();
+
+    req.file.filename = "user-" + req.id + "-" + Date.now() + ".jpeg";
+
+    sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat("jpeg")
+        .jpeg( { quality: 90 } )
+        .toFile(process.env.IMG_DIRECTORY + "/" + req.file.filename);
+    next();
+}
 
 exports.getUser = (request, response) => {
     const userID = request.params.id;
