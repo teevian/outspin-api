@@ -95,3 +95,13 @@ exports.updateSchema = {
         }
     }
 }
+
+const id = {
+    isInt: {
+        errorMessage: "Id must be a number"
+    }
+}
+
+exports.getClubSchema = {
+    id: id
+}

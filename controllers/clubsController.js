@@ -2,10 +2,13 @@ const mysql = require("mysql2");
 const fs = require('fs');
 
 const { getRange, distance } = require('../utils/geolocation');
+const ApiError = require("../utils/apiError");
+const catchAsync = require("../middlewares/catchAsyncMiddleware");
+
 
 const jsonTemplate = JSON.parse(fs.readFileSync(`${__dirname}/../models/templates/jsonTemplate.json`, 'utf-8'));
 let con;
-
+/*
 exports.getClubs = (request, response) => {
     var json = jsonTemplate;
     var query = request.query;
@@ -74,7 +77,7 @@ exports.getClubs = (request, response) => {
                 con.query(sql_query, (error, result, field) => {
                     if (error) throw error;
                     clubThumbnailC.peopleNumber = result[0].peopleNumber;
-                });*/
+                });
                 clubList.push(clubThumbnailC);
           });
 
@@ -94,5 +97,9 @@ exports.getClubs = (request, response) => {
         response.status(404).send({ code: 404, status: "No parameters" });
     }
 }
+*/
 
-
+exports.getClub = catchAsync(async (req, res) => {
+    console.log(req.query);
+    res.status(200).send();
+});

@@ -26,9 +26,9 @@ CREATE TABLE `club` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `clubName` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `password` varchar(255) NOT NULL,
-  `photoUrl` varchar(511) DEFAULT NULL,
-  `latitude` float NOT NULL,
-  `longitude` float NOT NULL,
+  `photo` varchar(511) DEFAULT NULL,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
   `burnNumber` mediumint unsigned DEFAULT '0',
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -41,7 +41,7 @@ CREATE TABLE `club` (
 
 LOCK TABLES `club` WRITE;
 /*!40000 ALTER TABLE `club` DISABLE KEYS */;
-INSERT INTO `club` VALUES (1,'Trumps','trumpitall',NULL,38.7177,-9.15092,0,'2022-04-05 18:08:42'),(2,'Lust in Rio','fsadffe2e1e',NULL,38.7062,-9.1494,0,'2022-04-05 18:09:04'),(3,'Ministerium Club','crazyhottt',NULL,38.7078,-9.13457,0,'2022-04-05 18:09:13'),(4,'NADA TEMPLE','naorezamosaqui',NULL,38.7476,-9.09871,0,'2022-04-05 18:09:22'),(5,'Finalmente Club','asdgge13ffea',NULL,38.7149,-9.14958,0,'2022-04-05 18:09:31'),(6,'Mome','notyourmomok',NULL,38.706,-9.15726,0,'2022-04-05 18:09:38'),(7,'Plateau','platosemcomida',NULL,38.7066,-9.15707,0,'2022-04-05 18:09:46');
+INSERT INTO `club` VALUES (1,'Trumps','trumpitall',NULL,38.71772384643555,-9.150919914245605,0,'2022-04-05 18:08:42'),(2,'Lust in Rio','fsadffe2e1e',NULL,38.70622253417969,-9.149401664733887,0,'2022-04-05 18:09:04'),(3,'Ministerium Club','crazyhottt',NULL,38.70781707763672,-9.134566307067871,0,'2022-04-05 18:09:13'),(4,'NADA TEMPLE','naorezamosaqui',NULL,38.747615814208984,-9.098714828491211,0,'2022-04-05 18:09:22'),(5,'Finalmente Club','asdgge13ffea',NULL,38.71491241455078,-9.14958381652832,0,'2022-04-05 18:09:31'),(6,'Mome','notyourmomok',NULL,38.706024169921875,-9.157259941101074,0,'2022-04-05 18:09:38'),(7,'Plateau','platosemcomida',NULL,38.706565856933594,-9.157071113586426,0,'2022-04-05 18:09:46');
 /*!40000 ALTER TABLE `club` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-05 19:08:07
+-- Dump completed on 2022-04-12 11:07:49
